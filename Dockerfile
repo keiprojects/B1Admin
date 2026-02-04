@@ -1,22 +1,30 @@
-# pull official base image
-FROM node:12-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
-# set working directory
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json package-lock.json ./
+RUN npm ci --silent
 
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --silent
-
-# add app
 COPY . ./
+RUN npm run build
 
-# start app
-CMD ["npm", "start"]
+# Runtime stage
+FROM node:20-alpine AS runner
 
-# expose port
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3101
+
+# Keep package metadata + node_modules so `vite preview` can run.
+COPY --from=builder /app/package.json /app/package-lock.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+
 EXPOSE 3101
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD-SHELL wget -q --spider "http://127.0.0.1:${PORT}/" || exit 1
+
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "3101"]

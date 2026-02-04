@@ -23,6 +23,7 @@ export class EnvironmentHelper {
         break;
     }
     EnvironmentHelper.Common.init(stage);
+    EnvironmentHelper.applyEnvironmentOverrides();
 
     WebsiteEnvironmentHelper.init();
     ApiHelper.apiConfigs.push(
@@ -50,6 +51,24 @@ export class EnvironmentHelper {
   };
 
   static initLocal = async () => { };
+
+  // Allow env-based API overrides in every stage, including prod builds.
+  static applyEnvironmentOverrides = () => {
+    EnvironmentHelper.Common.AttendanceApi = process.env.REACT_APP_ATTENDANCE_API || EnvironmentHelper.Common.AttendanceApi;
+    EnvironmentHelper.Common.DoingApi = process.env.REACT_APP_DOING_API || EnvironmentHelper.Common.DoingApi;
+    EnvironmentHelper.Common.GivingApi = process.env.REACT_APP_GIVING_API || EnvironmentHelper.Common.GivingApi;
+    EnvironmentHelper.Common.MembershipApi = process.env.REACT_APP_MEMBERSHIP_API || EnvironmentHelper.Common.MembershipApi;
+    EnvironmentHelper.Common.ReportingApi = process.env.REACT_APP_REPORTING_API || EnvironmentHelper.Common.ReportingApi;
+    EnvironmentHelper.Common.MessagingApi = process.env.REACT_APP_MESSAGING_API || EnvironmentHelper.Common.MessagingApi;
+    EnvironmentHelper.Common.MessagingApiSocket = process.env.REACT_APP_MESSAGING_API_SOCKET || EnvironmentHelper.Common.MessagingApiSocket;
+    EnvironmentHelper.Common.ContentApi = process.env.REACT_APP_CONTENT_API || EnvironmentHelper.Common.ContentApi;
+    EnvironmentHelper.Common.ContentRoot = process.env.REACT_APP_CONTENT_ROOT || EnvironmentHelper.Common.ContentRoot;
+    EnvironmentHelper.Common.B1Root = process.env.REACT_APP_B1_ROOT || EnvironmentHelper.Common.B1Root;
+    EnvironmentHelper.Common.B1AdminRoot = process.env.REACT_APP_B1ADMIN_ROOT || EnvironmentHelper.Common.B1AdminRoot;
+    EnvironmentHelper.Common.LessonsRoot = process.env.REACT_APP_LESSONS_ROOT || EnvironmentHelper.Common.LessonsRoot;
+    EnvironmentHelper.LessonsApi = process.env.REACT_APP_LESSONS_API || EnvironmentHelper.LessonsApi;
+    EnvironmentHelper.B1Url = process.env.REACT_APP_B1_WEBSITE_URL || EnvironmentHelper.B1Url;
+  };
 
   static initDev = () => {
     this.initStaging();
