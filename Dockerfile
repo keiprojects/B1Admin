@@ -25,6 +25,6 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3101
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-  CMD-SHELL wget -q --spider "http://127.0.0.1:${PORT}/" || exit 1
+  CMD sh -c 'wget -q --spider "http://127.0.0.1:${PORT}/" || exit 1'
 
 CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "3101"]
