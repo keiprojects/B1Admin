@@ -64,6 +64,7 @@ export default defineConfig(({ mode }) => {
       port: Number(env.PORT) ?? 3101,
       strictPort: true,
       open: true,
+      allowedHosts: ["b1admin.gsdavao.org"],
     },
     define: {
       // defining REACT_APP_ and NEXT_PUBLIC_ variables so we can phase REACT_APP_ out
